@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from app.database.database import Base, engine
+
 from app.routers import auth
 from app.routers import review
 from app.routers import payment
@@ -13,6 +15,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
+        "https://YOUR_PROJECT.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -25,8 +28,6 @@ app.include_router(
     tags=["Authentication"]
 )
 
-from app.routers import review
-
 app.include_router(
     review.router,
     prefix="/reviews",
@@ -34,17 +35,7 @@ app.include_router(
 )
 
 app.include_router(
-    review.router,
-    prefix="/reviews",
-    tags=["Reviews"],
-)
-
-app.include_router(
-
-payment.router,
-
-prefix="/payment",
-
-tags=["Payment"]
-
+    payment.router,
+    prefix="/payment",
+    tags=["Payment"]
 )
