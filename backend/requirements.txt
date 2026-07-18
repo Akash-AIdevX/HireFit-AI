@@ -1,0 +1,10 @@
+{
+    "email":"charlie993@example.com",
+    "password":"Charlesj90_"
+}
+
+{
+    "email":"imkiran88@gmail.com",
+    "password":"BHHHihj*&09"
+}
+
