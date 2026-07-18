@@ -69,13 +69,4 @@ urllib3==2.7.0
 uvicorn==0.51.0
 websockets==16.1.1
 
-{
-    "email":"charlie993@example.com",
-    "password":"Charlesj90_"
-}
-
-{
-    "email":"imkiran88@gmail.com",
-    "password":"BHHHihj*&09"
-}
 
