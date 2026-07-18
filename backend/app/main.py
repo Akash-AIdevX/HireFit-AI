@@ -11,6 +11,16 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="ResumeIQ API")
 
+
+import os
+
+print("=" * 50)
+print("DATABASE_URL =", os.environ.get("DATABASE_URL"))
+print("JWT_SECRET_KEY =", os.environ.get("JWT_SECRET_KEY"))
+print("GEMINI_API_KEY =", os.environ.get("GEMINI_API_KEY"))
+print("=" * 50)
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
