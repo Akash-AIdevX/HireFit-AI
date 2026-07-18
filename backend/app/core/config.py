@@ -13,12 +13,12 @@ class Settings(BaseSettings):
         extra="ignore"
     )
 
-    DATABASE_URL: str
-    JWT_SECRET_KEY: str
+    DATABASE_URL: str | None = None
+    JWT_SECRET_KEY: str | None = None
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
-    GEMINI_API_KEY: str
+    GEMINI_API_KEY: str | None = None
 
     STRIPE_SECRET_KEY: str | None = None
     STRIPE_PUBLISHABLE_KEY: str | None = None
