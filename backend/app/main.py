@@ -24,8 +24,8 @@ print("=" * 50)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",
-        "https://YOUR_PROJECT.vercel.app",
+        "settings.FRONTEND_URL",
+        "https://hire-fit-ai-wine.vercel.app/",
     ],
     allow_credentials=True,
     allow_methods=["*"],
