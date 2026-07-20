@@ -115,6 +115,58 @@ async def stripe_webhook(request: Request):
 
         db.close()
 
+    elif event["type"] == "customer.subscription.updated":
+
+        subscription = event["data"]["object"]
+
+        db = SessionLocal()
+
+        user = (
+            db.query(User)
+            .filter(
+                User.stripe_subscription_id == subscription["id"]
+            )
+            .first()
+        )
+
+        if user:
+
+            if subscription["cancel_at_period_end"]:
+
+                user.subscription_status = "canceling"
+
+            else:
+
+                user.subscription_status = subscription["status"]
+
+            db.commit()
+
+        db.close()
+
+        
+    elif event["type"] == "customer.subscription.deleted":
+
+        subscription = event["data"]["object"]
+
+        db = SessionLocal()
+
+        user = (
+            db.query(User)
+            .filter(
+                User.stripe_subscription_id == subscription["id"]
+            )
+            .first()
+        )
+
+        if user:
+
+            user.plan = "Free"
+            user.subscription_status = "canceled"
+            user.stripe_subscription_id = None
+
+            db.commit()
+
+        db.close()
     return {
 
         "status": "success"
@@ -163,8 +215,6 @@ def cancel_subscription(
     stripe.Subscription.modify(
 
         current_user.stripe_subscription_id,
-
-        cancel_at_period_end=True
 
     )
 
