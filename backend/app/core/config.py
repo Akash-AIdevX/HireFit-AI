@@ -2,10 +2,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 import os
 
-print("===== ENVIRONMENT =====")
-print(dict(os.environ))
-print("=======================")
-
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",          # Used locally
