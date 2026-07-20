@@ -13,9 +13,7 @@ from app.api.schemas.billing import BillingResponse
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 print(settings.STRIPE_SECRET_KEY)
-endpoint_secret = os.getenv(
-    "STRIPE_WEBHOOK_SECRET"
-)
+endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
 
 router = APIRouter()
 
@@ -28,13 +26,12 @@ def checkout(
 
 ):
 
-    session=stripe.checkout.Session.create(
-
+    session = stripe.checkout.Session.create(
         payment_method_types=["card"],
-
         mode="subscription",
-
         customer_email=current_user.email,
+
+        client_reference_id=str(current_user.id),
 
         line_items=[
 
@@ -48,9 +45,9 @@ def checkout(
 
         ],
 
-        success_url="http://localhost:3000/dashboard?success=true",
+        success_url=f"{settings.FRONTEND_URL}/dashboard?success=true",
 
-        cancel_url="http://localhost:3000/pricing"
+        cancel_url=f"{settings.FRONTEND_URL}/pricing"
 
     )
 
@@ -61,76 +58,26 @@ def checkout(
     }
 
 @router.post("/webhook")
-async def stripe_webhook(
-    request: Request,
-    db: Session = Depends(get_db)
-):
-
-    payload = await request.body()
-
-    event = stripe.Event.construct_from(
-        json.loads(payload),
-        stripe.api_key
-    )
-
-    if event["type"] == "checkout.session.completed":
-
-        session = event["data"]["object"]
-
-        email = session["customer_email"]
-
-        customer = session["customer"]
-
-        subscription = session["subscription"]
-
-        user = (
-            db.query(User)
-            .filter(User.email == email)
-            .first()
-        )
-
-        if user:
-
-            user.plan = "Pro"
-
-            user.subscription_status = "active"
-
-            user.stripe_customer_id = customer
-
-            user.stripe_subscription_id = subscription
-
-            db.commit()
-
-    return {"status":"success"}
-
-
-@router.post("/webhook")
 async def stripe_webhook(request: Request):
 
+    print("========== WEBHOOK HIT ==========")
+
     payload = await request.body()
 
-    sig_header = request.headers.get(
-        "stripe-signature"
-    )
+    sig_header = request.headers.get("stripe-signature")
 
     try:
-
         event = stripe.Webhook.construct_event(
-
             payload,
-
             sig_header,
-
             endpoint_secret,
-
         )
 
-    except Exception:
+        print(event["type"])
 
-        raise HTTPException(
-            status_code=400,
-            detail="Invalid webhook",
-        )
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=400, detail="Invalid webhook")
 
     if event["type"] == "checkout.session.completed":
 
@@ -156,7 +103,7 @@ async def stripe_webhook(request: Request):
 
         if user:
 
-            user.plan = "pro"
+            user.plan = "Pro"
 
             user.subscription_status = "active"
 
