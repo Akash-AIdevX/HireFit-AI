@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 
 type Review = {
@@ -12,6 +12,14 @@ type Review = {
 };
 
 export default function ResultPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResultContent />
+    </Suspense>
+  );
+}
+
+function ResultContent() {
   const params = useSearchParams();
 
   const review: Review = useMemo(() => {
