@@ -176,7 +176,7 @@ function ResultContent() {
                   key={index}
                   className="group rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-white/80 transition duration-300 hover:bg-white/10 hover:shadow-lg"
                 >
-                  <span className="mr-2 text-cyan-300">💡</span>
+                  <span className="mr-2 text-cyan-300">✴</span>
                   {item}
                 </li>
               ))

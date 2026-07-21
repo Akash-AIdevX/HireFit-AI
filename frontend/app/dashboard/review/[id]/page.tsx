@@ -60,7 +60,7 @@ Strengths
 
 <li key={s}>
 
-✅ {s}
+✓ {s}
 
 </li>
 
@@ -80,7 +80,7 @@ Weaknesses
 
 <li key={s}>
 
-❌ {s}
+✘ {s}
 
 </li>
 
@@ -126,7 +126,7 @@ Suggestions
 
 <li key={s}>
 
-💡 {s}
+✴ {s}
 
 </li>
 

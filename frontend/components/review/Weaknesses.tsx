@@ -26,7 +26,7 @@ items.map((item,index)=>(
 
 <li key={index}>
 
-❌ {item}
+✘ {item}
 
 </li>
 
