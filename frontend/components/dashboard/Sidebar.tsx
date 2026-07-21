@@ -18,7 +18,7 @@ const menu = [
   },
   {
     title: "Resume Reviews",
-    href: "/dashboard/reviews",
+    href: "https://hire-fit-ai-wine.vercel.app/dashboard/history",
     icon: FileText,
   },
   {
