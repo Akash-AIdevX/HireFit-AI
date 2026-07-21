@@ -6,140 +6,104 @@ import { getReview } from "@/lib/review";
 
 export default function ReviewPage() {
   const params = useParams();
-  const [data, setData] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState<any>();
 
   useEffect(() => {
-    async function load() {
-      try {
-        const res = await getReview(Number(params.id));
-        setData(res);
-      } catch (error) {
-        console.error("Failed to fetch review data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    if (params.id) {
-      load();
-    }
-  }, [params.id]);
+    load();
+  }, []);
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50">
-        <div className="text-lg font-medium text-slate-600 animate-pulse">
-          Analyzing your resume...
-        </div>
-      </div>
-    );
+  async function load() {
+    const res = await getReview(Number(params.id));
+    setData(res);
   }
 
   if (!data) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50">
-        <div className="text-lg font-medium text-red-600">
-          Failed to load review data.
-        </div>
+      <div className="flex items-center justify-center min-h-screen text-lg font-medium">
+        Loading...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto space-y-8">
-        
-        {/* Header / Score Section */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
-              ATS Resume Review
-            </h1>
-            <p className="text-slate-500 mt-2 text-sm sm:text-base">
-              Here is a breakdown of how well your resume matches the target job description.
-            </p>
-          </div>
-          <div className="flex flex-col items-center bg-blue-50 border border-blue-100 rounded-xl px-6 py-4 min-w-[140px]">
-            <span className="text-xs font-semibold text-blue-700 uppercase tracking-wider">
-              ATS Score
-            </span>
-            <span className="text-5xl font-extrabold text-blue-600 mt-1">
-              {data.ats_score}
-            </span>
-          </div>
-        </div>
-
-        {/* Two Column Layout for Strengths & Weaknesses */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Strengths */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-              <span className="text-green-600">✓</span> Strengths
-            </h2>
-            <ul className="space-y-3">
-              {data.strengths.map((s: string, index: number) => (
-                <li key={index} className="flex items-start gap-3 text-slate-600 text-sm leading-relaxed">
-                  <span className="text-green-500 shrink-0 mt-0.5">●</span>
-                  {s}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Weaknesses */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-              <span className="text-amber-600">⚠</span> Areas for Improvement
-            </h2>
-            <ul className="space-y-3">
-              {data.weaknesses.map((s: string, index: number) => (
-                <li key={index} className="flex items-start gap-3 text-slate-600 text-sm leading-relaxed">
-                  <span className="text-amber-500 shrink-0 mt-0.5">●</span>
-                  {s}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* Missing Keywords */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-          <h2 className="text-xl font-bold text-slate-900 mb-2">
-            Missing Keywords
-          </h2>
-          <p className="text-slate-500 text-sm mb-4">
-            Adding these relevant terms to your resume can significantly improve your score.
+    <div className="max-w-4xl mx-auto py-12 px-6 tracking-tight">
+      
+      {/* Header & Score Block */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-gray-200 pb-8 mb-10 gap-4">
+        <div>
+          <h1 className="text-4xl font-extrabold tracking-tight">
+            ATS Score Analysis
+          </h1>
+          <p className="text-gray-500 mt-2 text-sm">
+            Detailed performance review and keyword optimization report.
           </p>
-          <div className="flex gap-2 flex-wrap">
-            {data.missing_keywords.map((s: string, index: number) => (
-              <span
-                key={index}
-                className="bg-red-50 text-red-700 border border-red-100 rounded-lg px-3 py-1.5 text-xs font-medium"
-              >
-                + {s}
-              </span>
-            ))}
-          </div>
         </div>
+        <div className="text-7xl font-black text-blue-600 md:text-right">
+          {data.ats_score}
+        </div>
+      </div>
 
-        {/* Suggestions */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-          <h2 className="text-xl font-bold text-slate-900 mb-4">
-            Actionable Suggestions
+      {/* Main Grid: Strengths & Weaknesses side-by-side */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+        <div>
+          <h2 className="text-xl font-bold border-b pb-2 mb-4 flex items-center gap-2">
+            <span className="text-green-600">✓</span> Strengths
           </h2>
-          <ul className="space-y-4">
-            {data.suggestions.map((s: string, index: number) => (
-              <li key={index} className="flex items-start gap-4 p-3 rounded-xl bg-slate-50 border border-slate-100 text-slate-700 text-sm leading-relaxed">
-                <span className="bg-blue-100 text-blue-700 rounded-md w-6 h-6 flex items-center justify-center font-bold text-xs shrink-0">
-                  {index + 1}
-                </span>
-                <div>{s}</div>
+          <ul className="space-y-3">
+            {data.strengths.map((s: string) => (
+              <li key={s} className="text-gray-700 leading-relaxed text-sm pl-1">
+                {s}
               </li>
             ))}
           </ul>
         </div>
 
+        <div>
+          <h2 className="text-xl font-bold border-b pb-2 mb-4 flex items-center gap-2">
+            <span className="text-red-500">✘</span> Weaknesses
+          </h2>
+          <ul className="space-y-3">
+            {data.weaknesses.map((s: string) => (
+              <li key={s} className="text-gray-700 leading-relaxed text-sm pl-1">
+                {s}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
+
+      {/* Missing Keywords Section */}
+      <div className="mb-10">
+        <h2 className="text-xl font-bold border-b pb-2 mb-4">
+          Missing Keywords
+        </h2>
+        <div className="flex gap-2 flex-wrap pt-2">
+          {data.missing_keywords.map((s: string) => (
+            <span
+              key={s}
+              className="bg-red-50 text-red-700 border border-red-200 rounded-md px-3 py-1.5 text-xs font-semibold tracking-wide"
+            >
+              {s}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Suggestions Section */}
+      <div>
+        <h2 className="text-xl font-bold border-b pb-2 mb-4">
+          Suggestions
+        </h2>
+        <ul className="space-y-4">
+          {data.suggestions.map((s: string) => (
+            <li key={s} className="text-gray-700 leading-relaxed text-sm flex items-start gap-3">
+              <span className="text-blue-500 font-bold mt-0.5">▪</span>
+              <span>{s}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
     </div>
   );
 }
